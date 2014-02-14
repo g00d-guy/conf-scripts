@@ -3,7 +3,7 @@
 IPT="/sbin/iptables"
 PUB_IF="eth0"
 PUB_IP="5.9.143.119"
-INT_IF="vmbr0"
+INT_IF="br0"
 
 [ -f /opt/scripts/firewall/blocked-ips.list ] && BADIPS=$(grep -v -E "^#|^$" /opt/scripts/firewall/blocked-ips.list)
  
