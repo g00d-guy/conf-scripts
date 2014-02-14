@@ -79,31 +79,28 @@ $IPT -A OUTPUT -o ${PUB_IF} -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 
 # Masquarade (NAT) virtual machines network
 
-$IPT -t nat -A POSTROUTING -s '192.168.254.0/24' -o ${PUB_IF} -j MASQUERADE
+# $IPT -t nat -A POSTROUTING -s '192.168.254.0/24' -o ${PUB_IF} -j MASQUERADE
 
+#
 # Allow SSH/HTTP/HTTPS connections
+#
 
-$IPT -A INPUT -p tcp --dport 22 -j ACCEPT
-$IPT -A INPUT -p tcp --dport 80 -j ACCEPT
-$IPT -A INPUT -p tcp --dport 443 -j ACCEPT
-
-#$IPT -A INPUT -p tcp --dport 49152:65534 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-#$IPT -A OUTPUT -p tcp --sport 49152:65534 -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPT -A INPUT -p tcp --dports 22,80,443 -j ACCEPT
 
 # Allow OpenVPN Tunnel setup
 
 $IPT -A INPUT -p esp -j ACCEPT
 $IPT -A INPUT -p udp -m multiport --dports isakmp,1194 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-$IPT -A INPUT -i tun0 -j ACCEPT
-$IPT -A INPUT -i vmbr0 -j ACCEPT
+#$IPT -A INPUT -i tun0 -j ACCEPT
+#$IPT -A INPUT -i vmbr0 -j ACCEPT
 $IPT -A OUTPUT -p esp -j ACCEPT
 $IPT -A OUTPUT -p udp -m multiport --sports isakmp,1194 -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPT -A OUTPUT -o tun0 -j ACCEPT
-$IPT -A OUTPUT -o vmbr0 -j ACCEPT
+#$IPT -A OUTPUT -o tun0 -j ACCEPT
+#$IPT -A OUTPUT -o vmbr0 -j ACCEPT
 
-$IPT -A FORWARD -i tun0 -j ACCEPT
-$IPT -I FORWARD -i vmbr0 -o tun0 -j ACCEPT
-$IPT -I FORWARD -i tun0 -o vmbr0 -j ACCEPT
+#$IPT -A FORWARD -i tun0 -j ACCEPT
+#$IPT -I FORWARD -i vmbr0 -o tun0 -j ACCEPT
+#$IPT -I FORWARD -i tun0 -o vmbr0 -j ACCEPT
 
 # Allow incoming ICMP ping pong
 
@@ -115,15 +112,7 @@ $IPT -A OUTPUT -p icmp --icmp-type 0 -m state --state ESTABLISHED,RELATED -j ACC
 $IPT -A FORWARD -i ${PUB_IF} -o ${INT_IF} -m state --state ESTABLISHED,RELATED -j ACCEPT
 $IPT -A FORWARD -i ${INT_IF} -o ${PUB_IF} -j ACCEPT
 
-# No smb/windows sharing packets - too much logging
-
-$IPT -A INPUT -p tcp -i ${PUB_IF} --dport 137:139 -j REJECT
-$IPT -A INPUT -p udp -i ${PUB_IF} --dport 137:139 -j REJECT
- 
-# Log everything else
-
-#$IPT -A INPUT -j LOG --log-level 4 --log-prefix "IPT -- Input Traffic - "
-#$IPT -A FORWARD -j LOG --log-level 4 --log-prefix "IPT -- Forward Traffic - "
+# Drop everything else
 
 $IPT -A INPUT -j DROP
 
