@@ -1,9 +1,6 @@
-### Hetzner Online AG - installimage
-# Loopback device:
 auto lo
 iface lo inet loopback
 
-# device: eth0
 auto eth0
 iface eth0 inet static
 	address   5.9.143.119
@@ -20,10 +17,10 @@ iface eth0:0 inet static
         broadcast 5.9.143.127
         netmask   255.255.255.224
 
-auto vmbr0
-iface vmbr0 inet static
+auto br0
+iface br0 inet static
 	address  192.168.254.254
 	netmask  255.255.255.0
-	bridge_ports dummy1
+	bridge_ports dummy0
 	bridge_stp off
 	bridge_fd 0
