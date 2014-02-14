@@ -40,9 +40,6 @@ for ip in $BADIPS
 do
 	$IPT -A INPUT -s $ip -j DROP
 done
-
-#$IPT -A OUTPUT -p udp --dport 123 -j ACCEPT
-#$IPT -A INPUT -p udp --sport 123 -j ACCEPT
  
 # Sync
 
