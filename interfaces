@@ -1,0 +1,29 @@
+### Hetzner Online AG - installimage
+# Loopback device:
+auto lo
+iface lo inet loopback
+
+# device: eth0
+auto eth0
+iface eth0 inet static
+	address   5.9.143.119
+	broadcast 5.9.143.127
+	netmask   255.255.255.224
+	gateway   5.9.143.97
+	up route add -net 5.9.143.96 netmask 255.255.255.224 gw 5.9.143.97 eth0
+	up echo 1 > /proc/sys/net/ipv4/conf/eth0/proxy_arp
+
+auto eth0:0
+allow-hotplug eth0:0
+iface eth0:0 inet static
+        address   5.9.143.125
+        broadcast 5.9.143.127
+        netmask   255.255.255.224
+
+auto vmbr0
+iface vmbr0 inet static
+	address  192.168.254.254
+	netmask  255.255.255.0
+	bridge_ports dummy1
+	bridge_stp off
+	bridge_fd 0
